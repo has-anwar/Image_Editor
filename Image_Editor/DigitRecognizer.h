@@ -38,7 +38,7 @@ public:
 	Frequencies frequency();
 	int digit();
 	Image get_img();
-	void radon_transform(Image img);
+	unordered_map<int, vector<int>> radon_transform(Image img);
 
 	Coordinates get_coordinates(int start_x, int start_y, int R, int C);
 

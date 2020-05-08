@@ -206,7 +206,7 @@ Image DigitRecognizer::get_img()
 	return this->img;
 }
 
-void DigitRecognizer::radon_transform(Image img)
+unordered_map<int, vector<int>> DigitRecognizer::radon_transform(Image img)
 {
 	int R = img.get_R();
 	int C = img.get_C();
@@ -326,7 +326,7 @@ void DigitRecognizer::radon_transform(Image img)
 
 		angle += temp;
 	}
-
+	/*
 	vector <int> vec;
 	for (auto x : freq_map) {
 		cout <<"At angle: "<< x.first << endl;
@@ -336,6 +336,9 @@ void DigitRecognizer::radon_transform(Image img)
 			cout << *i << " ";
 		cout << endl;
 	}
+	*/
+
+	return freq_map;
 }
 
 Coordinates DigitRecognizer::get_coordinates(int start_x, int start_y, int R, int C)

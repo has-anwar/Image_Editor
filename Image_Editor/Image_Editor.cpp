@@ -1,17 +1,21 @@
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <iostream>
+#include <fstream>
 #include <fcntl.h>
 #include <string>
 #include <stdio.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <vector>
+#include <unordered_map> 
+
 
 #include "Image.h"
 #include "Editor.h"
 #include "DigitRecognizer.h"
 #include "Frequencies.h"
+
 
 using namespace std;
 using namespace cv;
@@ -20,13 +24,27 @@ using namespace cv;
 
 Image dismantel(FILE* fileptr, Image img);
 void display_output(string output);
+int driver(char file_name[]);
+void save_frequencies(char file_name[], unordered_map<int, vector<int>>);
 
 int main()
 {
+	vector<string> vec{ "sprint-zero.bmp" };
 
-	char file_name[]= "sprint-zero.bmp";
+	for (int i = 0; i < vec.size();i++) {
+		char* file_name = const_cast<char*>(vec[i].c_str());
+		driver(file_name);
+	}
+
+
+
+	return 0;
+}
+
+int driver(char file_name[])
+{
 	FILE* fileptr = fopen(file_name, "rb");
-	if (!fileptr){
+	if (!fileptr) {
 		cout << file_name << " could not be opened" << endl;
 		return -1;
 	}
@@ -35,64 +53,29 @@ int main()
 	Editor edit;
 	img = dismantel(fileptr, img);
 	byte*** pic = img.get_pic();
-	
+
 
 	int R = img.get_R();
 	int C = img.get_C();
 
-	//pic = edit.crop(pic, R, C);
-	
-	
-	//pic = edit.BGR2GREY(pic, R, C);
-	 //edit.GREY2BINARY(pic, R, C);             
-	//pic = edit.filter(pic, R, C);
-	
+	pic = edit.crop(pic, R, C);
+	edit.BGR2GREY(pic, R, C);
+	edit.GREY2BINARY(pic, R, C);
+	edit.filter(pic, R, C);
+
 
 	byte*** res_pic;
-	//res_pic = edit.scale(pic, R, C);
+	res_pic = edit.scale(pic, R, C);
 
-	//img.set_pic(res_pic);
+	img.set_pic(res_pic);
 	DigitRecognizer rec(img);
 
-	rec.radon_transform(img);
+	unordered_map<int, vector<int>> freq_map = rec.radon_transform(img);
 
-	/*
-	DigitRecognizer digir_r(img);
-	
-	int digit = digir_r.digit();
-	cout << "Digit is " << digit << endl;
-	*/
-	/*
-	 Frequencies freq = digir_r.frequency();
-	 
-	 cout << "Horizontal Frequency: ";
-	for (int i = 0; i <= freq.hor.size()-1 ; i++) {
-		cout << freq.hor[i] << " ";
-	}
-	cout << endl;
-	
-	cout << "Vertical Frequency: ";
-	for (int i = 0; i <= freq.ver.size() - 1; i++) {
-		cout << freq.ver[i] << " ";
-	}
-	cout << endl;
-
-	cout << "Diagonal Frequency: ";
-	for (int i = 0; i <= freq.diag.size() - 1; i++) {
-		cout << freq.diag[i] << " ";
-	}
-	cout << endl;
-
-	cout << "Anti-Diagonal Frequency: ";
-	for (int i = 0; i <= freq.anti_diag.size() - 1; i++) {
-		cout << freq.anti_diag[i] << " ";
-	}
-	cout << endl;
-	*/
 	fclose(fileptr);
 
 	string output = "output.bmp";
-	char* cstr = new char [output.size() + 1];
+	char* cstr = new char[output.size() + 1];
 	strcpy(cstr, output.c_str());
 	fileptr = fopen(cstr, "wb");
 
@@ -104,9 +87,39 @@ int main()
 	img.reassemble(fileptr);
 	fclose(fileptr);
 
+
 	display_output(output);
+	save_frequencies(file_name, freq_map);
+
 
 	return 0;
+}
+
+
+
+void save_frequencies(char* file_name, unordered_map<int, vector<int>> freq_map)
+{
+	vector <int> vec;
+	ofstream outfile;
+
+	outfile.open("radon_vectors.txt");
+	outfile << file_name << ":" << endl;
+
+
+	for (auto x : freq_map) {
+		outfile << "At angle: " << x.first << endl;
+		vec = x.second;
+
+		for (auto i = vec.begin(); i != vec.end(); ++i) {
+			outfile << *i << " ";
+		}
+		outfile << endl;
+		
+	}
+
+	outfile.close();
+	
+
 }
 
 Image dismantel(FILE* fileptr, Image img) {
@@ -142,3 +155,4 @@ void display_output(string output) {
 	imshow("Window", image);
 	waitKey(0);
 }
+
