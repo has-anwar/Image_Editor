@@ -29,13 +29,17 @@ void save_frequencies(char file_name[], unordered_map<int, vector<int>>);
 
 int main()
 {
-	vector<string> vec{ "sprint-zero.bmp" };
+	string path = "D:/Dev/C++/Image_Editor/Image_Editor/digits/";	//D:\Dev\C++\Image_Editor\Image_Editor\digits
+	vector<string> vec{ "0_0.bmp", "0_1.bmp", "0_2.bmp", "1_1.bmp", "1_2.bmp", "1_3.bmp", "2_1.bmp", "2_2.bmp", "2_3.bmp",
+						"3_1.bmp", "3_2.bmp", "3_3.bmp", "4_1.bmp", "4_2.bmp", "4_3.bmp", "5_1.bmp", "5_2.bmp", "5_3.bmp" };
+
 
 	for (int i = 0; i < vec.size();i++) {
-		char* file_name = const_cast<char*>(vec[i].c_str());
+		cout << vec[i] << endl;
+		string file = path + vec[i];
+		char* file_name = const_cast<char*>(file.c_str());
 		driver(file_name);
 	}
-
 
 
 	return 0;
@@ -48,7 +52,8 @@ int driver(char file_name[])
 		cout << file_name << " could not be opened" << endl;
 		return -1;
 	}
-
+	
+	
 	Image img;
 	Editor edit;
 	img = dismantel(fileptr, img);
@@ -58,10 +63,10 @@ int driver(char file_name[])
 	int R = img.get_R();
 	int C = img.get_C();
 
-	pic = edit.crop(pic, R, C);
-	edit.BGR2GREY(pic, R, C);
-	edit.GREY2BINARY(pic, R, C);
-	edit.filter(pic, R, C);
+	//pic = edit.crop(pic, R, C);
+	//edit.BGR2GREY(pic, R, C);
+	//edit.GREY2BINARY(pic, R, C);
+	//edit.filter(pic, R, C);
 
 
 	byte*** res_pic;
@@ -91,7 +96,7 @@ int driver(char file_name[])
 	display_output(output);
 	save_frequencies(file_name, freq_map);
 
-
+	
 	return 0;
 }
 
@@ -102,7 +107,7 @@ void save_frequencies(char* file_name, unordered_map<int, vector<int>> freq_map)
 	vector <int> vec;
 	ofstream outfile;
 
-	outfile.open("radon_vectors.txt");
+	outfile.open("radon_vectors.txt", std::ios_base::app);
 	outfile << file_name << ":" << endl;
 
 
