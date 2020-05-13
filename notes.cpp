@@ -25,8 +25,8 @@ int test()
 		cout<<"input.bmp could note be opened"<<endl;
 		return -1;
 	}
-    int bytes=fread(data_header,1,54,fileptr);
-	cout<<"bytes"<<bytes<<endl;
+		int bytes=fread(data_header,1,54,fileptr);
+		cout<<"bytes"<<bytes<<endl;
 
 	if(bytes==0 || bytes<54){
 		cout<<"bytes could not be input"<<bytes<<endl;

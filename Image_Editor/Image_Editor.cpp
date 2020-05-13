@@ -8,7 +8,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <vector>
-#include <unordered_map> 
+#include <map> 
 
 
 #include "Image.h"
@@ -25,12 +25,12 @@ using namespace cv;
 Image dismantel(FILE* fileptr, Image img);
 void display_output(string output);
 int driver(char file_name[]);
-void save_frequencies(char file_name[], unordered_map<int, vector<int>>);
+void save_frequencies(char file_name[], map<int, vector<int>>);
 
 int main()
 {
 	string path = "D:/Dev/C++/Image_Editor/Image_Editor/digits/";	//D:\Dev\C++\Image_Editor\Image_Editor\digits
-	vector<string> vec{ "0_0.bmp", "0_1.bmp", "0_2.bmp", "1_1.bmp", "1_2.bmp", "1_3.bmp", "2_1.bmp", "2_2.bmp", "2_3.bmp",
+	vector<string> vec{ "0_0.bmp", "0_1.bmp", "0_3.bmp", "1_1.bmp", "1_2.bmp", "1_3.bmp", "2_1.bmp", "2_2.bmp", "2_3.bmp",
 						"3_1.bmp", "3_2.bmp", "3_3.bmp", "4_1.bmp", "4_2.bmp", "4_3.bmp", "5_1.bmp", "5_2.bmp", "5_3.bmp" };
 
 
@@ -75,7 +75,7 @@ int driver(char file_name[])
 	img.set_pic(res_pic);
 	DigitRecognizer rec(img);
 
-	unordered_map<int, vector<int>> freq_map = rec.radon_transform(img);
+	map<int, vector<int>> freq_map = rec.radon_transform(img);
 
 	fclose(fileptr);
 
@@ -93,7 +93,7 @@ int driver(char file_name[])
 	fclose(fileptr);
 
 
-	display_output(output);
+	//display_output(output);
 	save_frequencies(file_name, freq_map);
 
 	
@@ -102,7 +102,7 @@ int driver(char file_name[])
 
 
 
-void save_frequencies(char* file_name, unordered_map<int, vector<int>> freq_map)
+void save_frequencies(char* file_name, map<int, vector<int>> freq_map)
 {
 	vector <int> vec;
 	ofstream outfile;

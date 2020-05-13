@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
-#include <unordered_map> 
+#include <map> 
 
 #include "Image.h"
 #include "Frequencies.h"
@@ -38,7 +38,7 @@ public:
 	Frequencies frequency();
 	int digit();
 	Image get_img();
-	unordered_map<int, vector<int>> radon_transform(Image img);
+	map<int, vector<int>> radon_transform(Image img);
 
 	Coordinates get_coordinates(int start_x, int start_y, int R, int C);
 

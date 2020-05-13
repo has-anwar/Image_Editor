@@ -166,47 +166,14 @@ Frequencies DigitRecognizer::frequency()
 
 }
 
-int DigitRecognizer::digit()
-{
 
-	int row = 0;
-	vector <int> values;
-	int val;
-
-	FR fr = this->frequency(row);
-
-
-
-	for (int r = 0; r < img.get_R()-1; r++) {
-		fr = this->frequency(r);
-		val = fr.f;
-		fr = this->frequency(r+1);
-		if (fr.f != val) {
-			values.push_back(val);
-		}
-
-	}
-
-	for (auto i = values.begin(); i != values.end(); ++i)
-		cout << *i << " ";
-
-	cout << endl;
-
-	if (values[0] == 0 && values[1] == 1 && values[2] == 2 && values[3] == 1) {
-		return 0;
-	}
-	else return 1;
-
-
-
-}
 
 Image DigitRecognizer::get_img()
 {
 	return this->img;
 }
 
-unordered_map<int, vector<int>> DigitRecognizer::radon_transform(Image img)
+map<int, vector<int>> DigitRecognizer::radon_transform(Image img)
 {
 	int R = img.get_R();
 	int C = img.get_C();
@@ -214,7 +181,7 @@ unordered_map<int, vector<int>> DigitRecognizer::radon_transform(Image img)
 
 	int F = 0;
 	vector <int> freq;
-	unordered_map<int, vector<int>> freq_map;
+	map<int, vector<int>> freq_map;
 
 	float x0 = 0.0f;
 	float y0 = 0.0f;
@@ -237,8 +204,6 @@ unordered_map<int, vector<int>> DigitRecognizer::radon_transform(Image img)
 
 		if ((angle > 0 && angle < 180) && (angle != 90 && angle != 180)) {
 
-			
-
 			for (int row = 0; row < R; row++) {
 				int col = 0;
 				x0 = row;
@@ -256,9 +221,9 @@ unordered_map<int, vector<int>> DigitRecognizer::radon_transform(Image img)
 
 					x0 = x1;
 					y0 = y1;
-					F = 0;
+					//F = 0;
 				}
-				//F = 0;
+
 				if (F != 0) {
 					freq.push_back(F);
 					F = 0;
@@ -326,35 +291,8 @@ unordered_map<int, vector<int>> DigitRecognizer::radon_transform(Image img)
 
 		angle += temp;
 	}
-	/*
-	vector <int> vec;
-	for (auto x : freq_map) {
-		cout <<"At angle: "<< x.first << endl;
-		vec = x.second;
-
-		for (auto i = vec.begin(); i != vec.end(); ++i)
-			cout << *i << " ";
-		cout << endl;
-	}
-	*/
 
 	return freq_map;
-}
-
-Coordinates DigitRecognizer::get_coordinates(int start_x, int start_y, int R, int C)
-{
-
-	int x2, y2;
-	Coordinates p1;
-	int angle = 108;
-	long rads = angle * 3.14 / 180;
-
-	x2 = (int)round(start_x + abs(cos(rads)) * (1));
-	y2 = (int)round(start_y + abs(sin(rads)) * (1));
-	p1.x2 = x2;
-	p1.y2 = y2;
-
-	return p1;
 }
 
 bool DigitRecognizer::isValid(int x, int y)
